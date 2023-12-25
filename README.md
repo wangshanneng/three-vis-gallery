@@ -2,7 +2,7 @@
 
 ## 简介
 
-three-vis-gallery 是一个三维展厅项目，基于 Three.js 技术实现。
+三维展厅项目，基于 Three.js 技术实现。
 
 ## 功能特点
 

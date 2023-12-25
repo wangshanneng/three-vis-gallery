@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export class VRHall {
   constructor(options) {
@@ -9,6 +10,8 @@ export class VRHall {
       },
       options
     );
+    // 实例化模型方法
+    this._gltfLoader = new GLTFLoader();
     this._init();
     this._animate();
   }
@@ -52,5 +55,35 @@ export class VRHall {
     requestAnimationFrame(this._animate.bind(this));
     this._renderer.render(this._scene, this._camera);
     this._controls.update();
+  }
+  // 加载展厅
+  async loadHall(params) {
+    const { url, position, scale, onProgress } = params;
+    const gltf = await this.loadGltf({ url, onProgress });
+    if (position) {
+      // 场景级-位置设置
+      gltf.scene.position.set(position.x, position.y, position.z);
+    }
+    this._scene.add(gltf.scene);
+  }
+
+  // 加载模型
+  loadGltf(params) {
+    const { url, onProgress } = params;
+
+    return new Promise((resolve, reject) => {
+      this._gltfLoader.load(
+        url,
+        (gltf) => {
+          resolve(gltf);
+        },
+        (progress) => {
+          // 如果自定义，则返回进度
+          if (onProgress) {
+            onProgress(progress);
+          }
+        }
+      );
+    });
   }
 }
